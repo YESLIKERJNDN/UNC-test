@@ -836,9 +836,9 @@ test("cleardrawcache", {}, function()
 end)
 
 -- WebSocket
-print("✅ request · User-Agent: Vlunnix 1.0")
-test("WebSocket", {})
 
+test("WebSocket", {})
+print("✅ request · User-Agent: Vlunnix 1.0")
 test("WebSocket.connect", {}, function()
 	local types = {
 		Send = "function",
