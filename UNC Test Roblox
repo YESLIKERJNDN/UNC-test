@@ -838,7 +838,7 @@ end)
 -- WebSocket
 
 test("WebSocket", {})
-print("✅ request · User-Agent: Vlunnix 1.0")
+
 test("WebSocket.connect", {}, function()
 	local types = {
 		Send = "function",
@@ -846,6 +846,7 @@ test("WebSocket.connect", {}, function()
 		OnMessage = {"table", "userdata"},
 		OnClose = {"table", "userdata"},
 	}
+print("✅ request · User-Agent: Vlunnix 1.0")
 	local ws = WebSocket.connect("ws://echo.websocket.events")
 	assert(type(ws) == "table" or type(ws) == "userdata", "Did not return a table or userdata")
 	for k, v in pairs(types) do
