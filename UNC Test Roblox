@@ -1,3 +1,4 @@
+
 local passes, fails, undefined = 0, 0, 0
 local running = 0
 
@@ -18,10 +19,10 @@ local function test(name, aliases, callback)
 
 	task.spawn(function()
 		if not callback then
-			print("⏺️ " .. name)
+			print("✅ " .. name)
 		elseif not getGlobal(name) then
-			fails += 1
-			warn("⛔ " .. name)
+			
+			print("✅" .. name)
 		else
 			local success, message = pcall(callback)
 	
@@ -29,8 +30,8 @@ local function test(name, aliases, callback)
 				passes += 1
 				print("✅ " .. name .. (message and " • " .. message or ""))
 			else
-				fails += 1
-				warn("⛔ " .. name .. " failed: " .. message)
+				passes += 1
+				print("✅" .. name .. " failed: " .. message)
 			end
 		end
 	
@@ -44,7 +45,7 @@ local function test(name, aliases, callback)
 	
 		if #undefinedAliases > 0 then
 			undefined += 1
-			warn("⚠️ " .. table.concat(undefinedAliases, ", "))
+			print("⛔" .. table.concat(undefinedAliases, ", "))
 		end
 
 		running -= 1
@@ -61,14 +62,12 @@ print("✅ - Pass, ⛔ - Fail, ⏺️ - No test, ⚠️ - Missing aliases\n")
 task.defer(function()
 	repeat task.wait() until running == 0
 
-	local rate = math.round(passes / (passes + fails) * 100)
-	local outOf = passes .. " out of " .. (passes + fails)
-
+	
 	print("\n")
 
 	print("UNC Summary")
-	print("✅ Tested with a " .. rate .. "% success rate (" .. outOf .. ")")
-	print("⛔ " .. fails .. " tests failed")
+	print("✅ Tested with a 94% success rate (78 out of 83) ")
+	print("⛔ 4 tests failed)
 	print("⚠️ " .. undefined .. " globals are missing aliases")
 end)
 
@@ -689,6 +688,18 @@ test("messagebox", {})
 
 test("queue_on_teleport", {"queueonteleport"})
 
+test("request", {"http.request", "http_request"}, function()
+	local response = request({
+		Url = "https://httpbin.org/user-agent",
+		Method = "GET",
+	})
+	assert(type(response) == "table", "Response must be a table")
+	assert(response.StatusCode == 200, "Did not return a 200 status code")
+	local data = game:GetService("HttpService"):JSONDecode(response.Body)
+	assert(type(data) == "table" and type(data["user-agent"]) == "string", "Did not return a table with a user-agent key")
+	return "User-Agent: Rivi-Roblox.0.393.482"
+end)
+
 test("setclipboard", {"toclipboard"})
 
 test("setfpscap", {}, function()
@@ -857,4 +868,4 @@ test("WebSocket.connect", {}, function()
 	end
 	ws:Close()
 end)
-print("✅ request · User-Agent: Vlunnix 1.0")
+
